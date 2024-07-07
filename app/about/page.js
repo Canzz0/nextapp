@@ -39,11 +39,11 @@ const Page = () => {
 
       const responseData = await response.json();
       console.log('Sunucudan gelen yanıt:', responseData);
-
+      fetchData()
       // Veri yenileme işlemini yapabilirsiniz, örneğin:
       setName('');
       setDescription('');
-      fetchData()
+
     } catch (error) {
       console.error('İstek gönderme veya işleme hatası:', error);
     }
