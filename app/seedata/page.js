@@ -1,7 +1,7 @@
 import React from "react";
 
 const getData = async () => {
-  const res = await fetch(`http://localhost:3000/api/seedata`);
+  const res = await fetch(`http://localhost:3000/api/twodata`);
   return res.json();
 };
 
