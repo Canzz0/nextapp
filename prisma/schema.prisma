@@ -3,8 +3,11 @@
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+
 // npx prisma migrate dev --name init --BU KOMUT VERİTABANI OLUŞTURMAMIZI SAĞLADI TABİ SQLLİTE İLE
 // npx prisma migrate dev --name add-description-to-post buda veritabanına yeni sütun ekleme mesela burada descrip ekledik
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -18,4 +21,13 @@ model Post {
   id      String   @id @default(cuid())
   name    String
   descrip String?
+}
+
+
+
+model User {
+  id      String   @id @default(cuid())
+  name    String
+  email   String
+  password String
 }

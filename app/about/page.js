@@ -20,7 +20,6 @@ const Page = () => {
     fetchData();
   }, []);
 
-  console.log(data)
   const AddData = async (event) => {
     event.preventDefault();
 

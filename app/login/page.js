@@ -1,33 +1,46 @@
-'use client'
- 
-import { authenticate } from '@/app/lib/actions'
-import { useFormState, useFormStatus } from 'react-dom'
- 
+"use client";
+import { useState } from "react";
+
 export default function Page() {
-  const [errorMessage, dispatch] = useFormState(authenticate, undefined)
- 
-  return (
-    <form action={dispatch}>
-      <input type="email" name="email" placeholder="Email" required />
-      <input type="password" name="password" placeholder="Password" required />
-      <div>{errorMessage && <p>{errorMessage}</p>}</div>
-      <LoginButton />
-    </form>
-  )
-}
- 
-function LoginButton() {
-  const { pending } = useFormStatus()
- 
-  const handleClick = (event) => {
-    if (pending) {
-      event.preventDefault()
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+const[data,setData]=useState("")
+  const login = async () => {
+    try {
+      const response = await fetch("api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({ email, password }),
+      });
+     
+      const resData = await response.json();
+      setData(resData)
+    } catch (error) {
+      console.error(error);
     }
-  }
- 
+  };
+
   return (
-    <button aria-disabled={pending} type="submit" onClick={handleClick}>
-      Login
-    </button>
-  )
+    <>
+      <div>
+        <input
+          onChange={(e) => setEmail(e.target.value)}
+          type="text"
+          placeholder="E-posta adresinizi giriniz"
+        />
+        <input
+          onChange={(e) => setPassword(e.target.value)}
+          type="password"
+          placeholder="Şifrenizi Giriniz"
+        />
+        <button onClick={() => login()}>Giriş Yap</button>
+      </div>
+      <div>
+              <span>{data.token}</span>
+      </div>
+    </>
+  );
 }

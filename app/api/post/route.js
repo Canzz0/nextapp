@@ -1,5 +1,7 @@
-import prisma from "@/app/lib/prisma";
+import { PrismaClient } from "@prisma/client";
 
+
+prisma = new PrismaClient();
 export async function GET() {
   let res = await prisma.Post.findMany();
   return new Response(JSON.stringify(res));
@@ -17,7 +19,7 @@ export async function POST(req) {
       },
     });
     return new Response(
-      JSON.stringify({ message: "Başarı İle Kayıt Edildi" }),
+      JSON.stringify({ message: "Başarı İle Kayıt Edildi",newPost }),
       {
         headers: {
           "Content-Type": "application/json",
@@ -45,7 +47,7 @@ export async function DELETE(req) {
     const deletepost = await prisma.Post.delete({
       where: { id: id },
     });
-    return new Response(JSON.stringify({ message: "Başarı İle Silindi" }), {
+    return new Response(JSON.stringify({ message: "Başarı İle Silindi",deletepost }), {
       headers: {
         "Content-Type": "application/json",
       },
@@ -75,7 +77,7 @@ export async function PUT(req) {
         descrip: post.descrip,
       },
     });
-    return new Response(JSON.stringify({ message: "Başarı İle Güncellendi" }), {
+    return new Response(JSON.stringify({ message: "Başarı İle Güncellendi",updatedPost }), {
       headers: {
         "Content-Type": "application/json",
       },
