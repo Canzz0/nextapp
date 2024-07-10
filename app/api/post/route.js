@@ -1,7 +1,10 @@
 import { PrismaClient } from "@prisma/client";
+import { cookies, headers } from "next/headers";
+const jwt = require("jsonwebtoken");
+const secretKey = process.env.SECRET_KEY;
 
 
-prisma = new PrismaClient();
+const prisma = new PrismaClient();
 export async function GET() {
   let res = await prisma.Post.findMany();
   return new Response(JSON.stringify(res));
@@ -11,22 +14,40 @@ export async function GET() {
 //POST İŞLEMİ
 export async function POST(req) {
   try {
+    const cookie= cookies().get("Authorization")
+
+   const token=cookie.value
     const post = await req.json();
-    const newPost = await prisma.Post.create({
-      data: {
-        name: post.name,
-        descrip: post.descrip,
-      },
-    });
-    return new Response(
-      JSON.stringify({ message: "Başarı İle Kayıt Edildi",newPost }),
-      {
+    try{
+      const decoded = jwt.verify(token, secretKey);
+      if(decoded){
+        const newPost = await prisma.Post.create({
+          data: {
+            name: post.name,
+            descrip: post.descrip,
+          },
+        });
+        return new Response(
+          JSON.stringify({ message: "Başarı İle Kayıt Edildi",newPost }),
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            status: 201,
+          }
+        );
+      }
+    }catch(error){
+      return new Response(JSON.stringify({ message: 'Geçersiz Token' }), {
         headers: {
           "Content-Type": "application/json",
         },
-        status: 201,
-      }
-    );
+        status: 400,
+      });
+
+    }
+  
+   
   } catch (error) {
     return new Response(JSON.stringify({ error }), {
       headers: {

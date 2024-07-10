@@ -4,7 +4,6 @@ import { useState } from "react";
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-const[data,setData]=useState("")
   const login = async () => {
     try {
       const response = await fetch("api/login", {
@@ -15,9 +14,8 @@ const[data,setData]=useState("")
 
         body: JSON.stringify({ email, password }),
       });
-     
+
       const resData = await response.json();
-      setData(resData)
     } catch (error) {
       console.error(error);
     }
@@ -37,9 +35,6 @@ const[data,setData]=useState("")
           placeholder="Şifrenizi Giriniz"
         />
         <button onClick={() => login()}>Giriş Yap</button>
-      </div>
-      <div>
-              <span>{data.token}</span>
       </div>
     </>
   );

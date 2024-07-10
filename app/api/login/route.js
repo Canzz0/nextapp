@@ -1,9 +1,11 @@
-import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
+import { cookies } from "next/headers";
 const jwt = require("jsonwebtoken");
-const secretKey = "Gizli Anahtar";
+const secretKey = process.env.SECRET_KEY;
 
-prisma = new PrismaClient();
+
+const prisma = new PrismaClient();
 
 export async function POST(req) {
   try {
@@ -26,6 +28,14 @@ export async function POST(req) {
         user: user,
       };
       const token = jwt.sign(payload, secretKey, { expiresIn: "1h" });
+      cookies().set('Authorization',token,{
+        secure:true,
+        httpOnly:true,
+        expires:Date.now()+24*60*60*1000*3,
+        path:'/',
+        sameSite:'strict'
+
+      })
       return new Response(
         JSON.stringify({
           message: "Giriş Başarılı",

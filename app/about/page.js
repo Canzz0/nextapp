@@ -19,7 +19,7 @@ const Page = () => {
   useEffect(() => {
     fetchData();
   }, []);
-
+  var token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiY2x5ZGNqanphMDAwMnJjNmEwMGZ4bDVqciIsIm5hbWUiOiJjYW4xIiwiZW1haWwiOiJjYW5AMSIsInBhc3N3b3JkIjoiJDJiJDEwJGh5cEVXY2oyald5VURxTUpNQW1SY3UwVFZtRWM4aXFTd3BqWHYxclhFL0lHakFoVHo1VmhTIn0sImlhdCI6MTcyMDY0NDM3MywiZXhwIjoxNzIwNjQ3OTczfQ.6ATHd1NMfj2TgwfRUEwuvyFALO92SXsjnyIoWEpmIpE"
   const AddData = async (event) => {
     event.preventDefault();
 
@@ -29,7 +29,7 @@ const Page = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name, descrip }), // JSON formatında veriyi gönderin
+        body: JSON.stringify({ name, descrip,token }), // JSON formatında veriyi gönderin
       });
 
       if (!response.ok) {
