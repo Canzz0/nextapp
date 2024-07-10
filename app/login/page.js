@@ -1,4 +1,5 @@
 "use client";
+import { redirect } from "next/dist/server/api-utils";
 import { useState } from "react";
 
 export default function Page() {
@@ -15,7 +16,10 @@ export default function Page() {
         body: JSON.stringify({ email, password }),
       });
 
-      const resData = await response.json();
+      const res = await response
+      if (res.ok) {
+        window.location.href = '/'; // Tarayıcıda doğrudan yönlendirme yapmak için
+      }
     } catch (error) {
       console.error(error);
     }

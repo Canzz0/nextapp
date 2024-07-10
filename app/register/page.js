@@ -18,9 +18,10 @@ export default function Page() {
         body:JSON.stringify({name,email,password}),
       })
      
-      const resData=await response.json();
-
-      console.log(resData)
+      const res=await response;
+      if (res.ok) {
+        window.location.href = '/login'; // Tarayıcıda doğrudan yönlendirme yapmak için
+      }
     }catch(error){
       console.error('Başarısız');
     }
