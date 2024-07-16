@@ -1,40 +1,28 @@
-'use client'
-import { useState } from 'react';
+"use client";
+import { registerUser } from "../actions/registeruser";
+import { useFormState } from "react-dom";
+
+const initialState = {
+  message: "",
+};
 
 export default function Page() {
-
-  const [name,setName]=useState("");
-  const [email,setEmail]=useState("");
-  const [password,setPassword]=useState("");
-
-  const register=async()=>{
-    try{
-      const response = await fetch("api/register",{
-        method:"POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-
-        body:JSON.stringify({name,email,password}),
-      })
-     
-      const res=await response;
-      if (res.ok) {
-        window.location.href = '/login'; // Tarayıcıda doğrudan yönlendirme yapmak için
-      }
-    }catch(error){
-      console.error('Başarısız');
-    }
-  };
+  const [state, formAction] = useFormState(registerUser, initialState);
 
   return (
     <>
-    <div>
-      <input onChange={(e)=>setName(e.target.value)} type="text" placeholder='Adınızı giriniz'/>
-      <input onChange={(e)=>setEmail(e.target.value)}type="text" placeholder='E-posta adresinizi giriniz'/>
-      <input onChange={(e)=>setPassword(e.target.value)} type="password" placeholder='Şifrenizi Giriniz'/>
-      <button onClick={()=>register()}>Kayıt ol</button>
-    </div>
+      <form action={formAction}>
+        <label>İsim:</label>
+        <input type="text" id="name" name="name" required />
+        <label>Email:</label>
+        <input type="email" id="email" name="email" required />
+        <label htmlFor="email">Parola</label>
+        <input type="password" id="password" name="password" required />
+        <label htmlFor="email">Parola Tekrar</label>
+        <input type="password" id="repassword" name="repassword" required />
+        <p aria-live="polite">{state?.message}</p>
+        <button>Kayıt Ol</button>
+      </form>
     </>
-  )
+  );
 }

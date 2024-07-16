@@ -1,45 +1,26 @@
 "use client";
-import { redirect } from "next/dist/server/api-utils";
-import { useState } from "react";
+import { useFormState } from "react-dom";
+import { loginUser } from "../actions/login/loginuser";
 
-export default function Page() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const login = async () => {
-    try {
-      const response = await fetch("api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+const initialState = {
+  message: "",
+};
 
-        body: JSON.stringify({ email, password }),
-      });
-
-      const res = await response
-      if (res.ok) {
-        window.location.href = '/'; // Tarayıcıda doğrudan yönlendirme yapmak için
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+export function Signup() {
+  const [state, formAction] = useFormState(loginUser, initialState);
 
   return (
-    <>
-      <div>
-        <input
-          onChange={(e) => setEmail(e.target.value)}
-          type="text"
-          placeholder="E-posta adresinizi giriniz"
-        />
-        <input
-          onChange={(e) => setPassword(e.target.value)}
-          type="password"
-          placeholder="Şifrenizi Giriniz"
-        />
-        <button onClick={() => login()}>Giriş Yap</button>
-      </div>
-    </>
+    <form action={formAction}>
+      <label htmlFor="email">Email</label>
+      <input type="text" id="email" name="email" required />
+      <label>Parola</label>
+      <input type="password" id="password" name="password" required />
+      <label>Parola Tekrar</label>
+      <input type="password" id="repassword" name="repassword" required />
+      <p aria-live="polite">{state?.message}</p>
+      <button>Giriş Yap</button>
+    </form>
   );
 }
+
+export default Signup;

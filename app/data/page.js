@@ -19,7 +19,6 @@ const Page = async() => {
         data2
     ])
 
-    console.log(resultData)
   return (
     <>
       <span>Veri Çekme Sayfası(consolda)</span>

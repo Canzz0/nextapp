@@ -1,3 +1,5 @@
+
+"use server"
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { cookies } from "next/headers";
@@ -27,20 +29,15 @@ export async function POST(req) {
       const payload = {
         user: user,
       };
-      const token = jwt.sign(payload, secretKey, { expiresIn: "1h" });
-      cookies().set('Authorization',token,{
-        secure:true,
-        httpOnly:true,
-        expires:Date.now()+24*60*60*1000*3,
-        path:'/',
-        sameSite:'strict'
 
-      })
+      const token = jwt.sign(payload, secretKey, { expiresIn: "1h" });
+
+
       return new Response(
         JSON.stringify({
           message: "Giriş Başarılı",
           user,
-          token,
+          token
         }),
         { status: 201, headers: { "Content-Type": "application/json" } }
       );
@@ -52,6 +49,7 @@ export async function POST(req) {
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
     }
+    
   } catch (error) {
     return new Response(
       JSON.stringify({

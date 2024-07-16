@@ -1,33 +1,49 @@
 "use client"
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useFormState } from "react-dom";
-import { addPost } from "../actions/post/addpost";
-import { getPost } from "../actions/post/getpost";
 
-
-const initialState = {
-  message: "",
-  result: []
-};
 const Page = () => {
-  const [state, formAction] = useFormState(addPost, initialState);
-  const [data, setData] = useState(initialState.result);
-
+  const [data, setData] = useState([]);
+  const [name, setName] = useState('');
+  const [descrip, setDescrip] = useState('');
 
   const fetchData = async () => {
     try {
-      const result = await getPost();
+      const res = await fetch('/api/post');
+      const result = await res.json();
       setData(result);
     } catch (error) {
-      console.error("Veri çekme hatası:", error);
+      console.error('Veri alma işlemi başarısız oldu:', error);
     }
   };
   useEffect(() => {
-  
     fetchData();
-  }, [state.result,state.message]);
-  
+  }, []);
+  const AddData = async (event) => {
+    event.preventDefault();
+
+    try {
+      const response = await fetch("/api/post", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, descrip }), // JSON formatında veriyi gönderin
+      });
+
+      if (!response.ok) {
+        throw new Error('HTTP isteği başarısız oldu.');
+      }
+
+      const responseData = await response.json();
+      console.log('Sunucudan gelen yanıt:', responseData);
+      fetchData()
+      // Veri yenileme işlemini yapabilirsiniz, örneğin:
+    } catch (error) {
+      console.error('İstek gönderme veya işleme hatası:', error);
+    }
+  };
+
 
   const deleteData=async (id)=>{
     try {
@@ -51,7 +67,7 @@ const Page = () => {
   return (
     <div>
       <Image width={200} height={200} src={"/next.svg"} alt="Next.js Logo" />
-      <p aria-live="polite">{state?.message}</p>
+
       {data.map((d, index) => (
         <div key={index}>
           <span>{d.name}: {d.descrip}</span>
@@ -59,24 +75,21 @@ const Page = () => {
         </div>
       ))}
 
-      <form action={formAction}>
-        <label>Adı:</label>
+      <form onSubmit={AddData}>
         <input
           type="text"
-          id="name"
-          name="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           placeholder="İsim"
         />
-          <label>Açıklama:</label>
         <input
           type="text"
-             id="descrip"
-          name="descrip"
+          value={descrip}
+          onChange={(e) => setDescrip(e.target.value)}
           placeholder="Açıklama"
         />
-        <button>Gönder</button>
+        <button type="submit">Gönder</button>
       </form>
-    
     </div>
   );
 };

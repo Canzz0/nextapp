@@ -22,7 +22,6 @@ export async function POST(req) {
 
     //Şifre hashleme
     const hashedPassword = await bcrypt.hash(password, 10);
-
     const newUser = await prisma.User.create({
       data: {
         email: email,

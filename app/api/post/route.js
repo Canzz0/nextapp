@@ -1,8 +1,6 @@
 import { PrismaClient } from "@prisma/client";
-import { cookies, headers } from "next/headers";
 const jwt = require("jsonwebtoken");
 const secretKey = process.env.SECRET_KEY;
-
 
 const prisma = new PrismaClient();
 export async function GET() {
@@ -10,17 +8,14 @@ export async function GET() {
   return new Response(JSON.stringify(res));
 }
 
-
 //POST İŞLEMİ
 export async function POST(req) {
   try {
-    const cookie= cookies().get("Authorization")
-
-   const token=cookie.value
     const post = await req.json();
-    try{
+    try {
+      const token=post.token;
       const decoded = jwt.verify(token, secretKey);
-      if(decoded){
+      if (decoded) {
         const newPost = await prisma.Post.create({
           data: {
             name: post.name,
@@ -28,7 +23,7 @@ export async function POST(req) {
           },
         });
         return new Response(
-          JSON.stringify({ message: "Başarı İle Kayıt Edildi",newPost }),
+          JSON.stringify({ message: "Başarı İle Kayıt Edildi", newPost }),
           {
             headers: {
               "Content-Type": "application/json",
@@ -36,20 +31,25 @@ export async function POST(req) {
             status: 201,
           }
         );
+      }else{
+        return new Response(JSON.stringify({message:"Geçersiz Token" }), {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          status: 400,
+        });
       }
-    }catch(error){
-      return new Response(JSON.stringify({ message: 'Geçersiz Token' }), {
+    } catch (error) {
+      return new Response(JSON.stringify({error }), {
         headers: {
           "Content-Type": "application/json",
         },
         status: 400,
       });
-
     }
-  
-   
   } catch (error) {
-    return new Response(JSON.stringify({ error }), {
+    console.log(error);
+    return new Response(JSON.stringify({ message:"Hata Sebebi",error }), {
       headers: {
         "Content-Type": "application/json",
       },
@@ -59,7 +59,6 @@ export async function POST(req) {
     await prisma.$disconnect();
   }
 }
-
 
 //DELETE İŞLEMİ
 export async function DELETE(req) {
@@ -68,12 +67,15 @@ export async function DELETE(req) {
     const deletepost = await prisma.Post.delete({
       where: { id: id },
     });
-    return new Response(JSON.stringify({ message: "Başarı İle Silindi",deletepost }), {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      status: 201,
-    });
+    return new Response(
+      JSON.stringify({ message: "Başarı İle Silindi", deletepost }),
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        status: 201,
+      }
+    );
   } catch (error) {
     return new Response(JSON.stringify({ error }), {
       headers: {
@@ -85,7 +87,6 @@ export async function DELETE(req) {
     await prisma.$disconnect();
   }
 }
-
 
 //UPDATE İŞLEMİ
 export async function PUT(req) {
@@ -98,12 +99,15 @@ export async function PUT(req) {
         descrip: post.descrip,
       },
     });
-    return new Response(JSON.stringify({ message: "Başarı İle Güncellendi",updatedPost }), {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      status: 201,
-    });
+    return new Response(
+      JSON.stringify({ message: "Başarı İle Güncellendi", updatedPost }),
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        status: 201,
+      }
+    );
   } catch (error) {
     return new Response(JSON.stringify({ error }), {
       headers: {
